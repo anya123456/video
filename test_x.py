@@ -48,32 +48,31 @@ print(test_q)
 from keras.utils import to_categorical
 #Reload model
 model = load_model('E:\\data\\video\\VQADatasetA_20180815\\mode.h5')
-#result = model.predict_proba([x_img,test_q], batch_size=1, verbose=0)
 result =model.predict([x_img,test_q])
 
 #########################################整理格式
-import numpy as np
-y_di= pd.read_csv(path + 'y_di.csv', header=None)
+y_di= pd.read_csv(path + 'y_di.csv', header=None)#这里需要替换
 y=y_di[:][0]
 res=[]
 for i in range(len(data_test)):
-    i=0
+    tem_res=[]
     lable, q1, a11, a12, a13, q2, a21, a22, a23, q3, a31, a32, a33, q4, a41, a42, a43, q5, a51, a52, a53 = \
     data_test.loc[i]
-    res.append(lable)
+    tem_res.append(lable)
     for j in range (5):
         if j==0:
-            res.append(str(q1))
+            tem_res.append(str(q1))
         if j==1:
-            res.append(str(q2))
+            tem_res.append(str(q2))
         if j == 2:
-            res.append(str(q3))
+            tem_res.append(str(q3))
         if j==3:
-            res.append(str(q4))
+            tem_res.append(str(q4))
         if j==4:
-            res.append(str(q5))
+            tem_res.append(str(q5))
         tem=list(result[5*i+j])
-        test_a=y[tem.index(max(tem))+1]
-        res.append(str(test_a[2:-1]))
-    res.append('\n')
-    res=res.replace('"','')
+        test_a=y[tem.index(max(tem))+1]#对应到字典
+        tem_res.append(str(test_a[2:-1]))
+    res.append(tem_res)
+    # res.append(','.join([str(x) for x in tem_res]))
+pd.DataFrame(res).to_csv(path+'res.txt', index = None, header = None)
